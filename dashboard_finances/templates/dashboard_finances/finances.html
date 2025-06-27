@@ -1,0 +1,62 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Finances - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Financial Dashboard</h5>
+                </div>
+                <div class="card-body">
+                    <p>Financial information and analytics will appear here.</p>
+                </div>
+            </div>
+        </div>
+        
+        {% if user.is_staff %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-money-bill-wave fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Exchange Rates</h5>
+                    <p class="card-text">Manage currency exchange rates for international pricing</p>
+                    <a href="{% url 'dashboard_finances:exchange_rates_list' %}" class="btn btn-primary">
+                        <i class="fas fa-cog me-1"></i> Manage Rates
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Sales Reports</h5>
+                    <p class="card-text">View detailed sales reports and analytics</p>
+                    <a href="#" class="btn btn-success">
+                        <i class="fas fa-chart-bar me-1"></i> View Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-wallet fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">Transactions</h5>
+                    <p class="card-text">View and manage financial transactions</p>
+                    <a href="#" class="btn btn-warning">
+                        <i class="fas fa-list me-1"></i> View Transactions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

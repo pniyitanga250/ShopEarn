@@ -1,0 +1,158 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load product_filters %}
+
+{% block title %}Shopping Cart - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Shopping Cart</h1>
+    
+    {% if cart|length > 0 %}
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Cart Items ({{ cart|length }})</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in cart %}
+                                        {% if item.product.id %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% if item.product.main_image %}
+                                                        <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                    {% else %}
+                                                        <img src="https://via.placeholder.com/60x60?text=Product" alt="{{ item.product.name }}" class="img-thumbnail me-3">
+                                                    {% endif %}
+                                                    <div>
+                                                        <h6 class="mb-0">{{ item.product.name }}</h6>
+                                                        <small class="text-muted">{{ item.product.category.name }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{% display_price item.price user.country %}</td>
+                                            <td>
+                                                <form action="{% url 'shop_orders:cart_add' item.product.id %}" method="post" class="cart-update-form">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="override" value="True">
+                                                    <div class="input-group input-group-sm" style="width: 120px;">
+                                                        <button type="button" class="btn btn-outline-secondary quantity-minus">-</button>
+                                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control text-center quantity-input">
+                                                        <button type="button" class="btn btn-outline-secondary quantity-plus">+</button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            <td>{% display_price item.total_price user.country %}</td>
+                                            <td>
+                                                <form action="{% url 'shop_orders:cart_remove' item.product.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>{% display_price cart.get_total_price user.country %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span>{% display_price 0 user.country %}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Tax:</span>
+                            <span>{% display_price 0 user.country %}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Total:</strong>
+                            <strong>{% display_price cart.get_total_price user.country %}</strong>
+                        </div>
+                        <div class="d-grid">
+                            <a href="{% url 'shop_orders:checkout' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-credit-card me-2"></i> Proceed to Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">MLM Benefits</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Your purchase will contribute to your MLM volume and help you earn commissions!
+                        </div>
+                        <p>
+                            Total PV (Product Value): <strong>{{ cart.get_total_product_value }}</strong>
+                            <small class="text-muted">(PV points contribute to your rank advancement)</small>
+                            <span class="badge bg-warning text-dark ms-2">Coming Soon</span>
+                        </p>
+                        <p class="mb-0">This purchase will count towards your binary volume and help you qualify for rank advancements.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'shop_products:product_list' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i> Continue Shopping
+                    </a>
+                    <form action="{% url 'shop_orders:cart_clear' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-2"></i> Clear Cart
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                <h3>Your cart is empty</h3>
+                <p class="mb-4">Looks like you haven't added any products to your cart yet.</p>
+                <a href="{% url 'shop_products:product_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-shopping-bag me-2"></i> Start Shopping
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

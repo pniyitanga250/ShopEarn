@@ -1,0 +1,371 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load product_filters %}
+
+{% block title %}Checkout - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Checkout</h1>
+    
+    <div class="row">
+        <!-- Shipping Information -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form id="checkout-form" action="{% url 'shop_orders:order_create' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% if shipping_addresses %}
+                            <div class="mb-4">
+                                <h6>Select a Saved Address</h6>
+                                {% for address in shipping_addresses %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="address_id" id="address-{{ address.id }}" value="{{ address.id }}" {% if address.is_default %}checked{% endif %}>
+                                        <label class="form-check-label" for="address-{{ address.id }}">
+                                            <strong>{{ address.first_name }} {{ address.last_name }}</strong><br>
+                                            {{ address.address }}, {{ address.city }}, {{ address.state }} {{ address.postal_code }}<br>
+                                            {{ address.country }}
+                                            {% if address.phone %} | {{ address.phone }}{% endif %}
+                                            {% if address.is_default %} <span class="badge bg-primary">Default</span>{% endif %}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="address_id" id="address-new" value="">
+                                    <label class="form-check-label" for="address-new">
+                                        <strong>Use a new address</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div id="new-address-form" style="display: none;">
+                        {% else %}
+                            <div id="new-address-form">
+                        {% endif %}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="first_name" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="last_name" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address" name="address">
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" name="city">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="state" class="form-label">State/Province</label>
+                                    <input type="text" class="form-control" id="state" name="state">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="postal_code" class="form-label">Postal Code</label>
+                                    <input type="text" class="form-control" id="postal_code" name="postal_code">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="country" class="form-label">Country</label>
+                                    <input type="text" class="form-control" id="country" name="country">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="{{ user.phone_number }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="save_address" name="save_address" value="1">
+                                    <label class="form-check-label" for="save_address">
+                                        Save this address for future orders
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_default" name="is_default" value="1">
+                                    <label class="form-check-label" for="is_default">
+                                        Set as default address
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Payment Method</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" form="checkout-form" name="payment_method" id="payment-mtn" value="MTN_MOBILE_MONEY">
+                        <label class="form-check-label" for="payment-mtn">
+                            <img src="{% static 'images/MTN.svg' %}" alt="MTN" style="height: 20px;"> MTN Mobile Money
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" form="checkout-form" name="payment_method" id="payment-airtel" value="AIRTEL_MONEY">
+                        <label class="form-check-label" for="payment-airtel">
+                            <img src="{% static 'images/Airtel.svg' %}" alt="Airtel" style="height: 20px;"> Airtel Money
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" form="checkout-form" name="payment_method" id="payment-credit" value="CARD">
+                        <label class="form-check-label" for="payment-credit">
+                            <i class="far fa-credit-card me-2"></i> Credit Card
+                        </label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" form="checkout-form" name="payment_method" id="payment-wallet" value="CASH">
+                        <label class="form-check-label" for="payment-wallet">
+                            <i class="fas fa-wallet me-2"></i> Cash/Wallet <span class="badge bg-secondary ms-2">Coming Soon</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Mobile Money Instructions - Permanently visible with custom styling -->
+                    <div class="mb-3 p-3 bg-light border rounded" style="border-left: 4px solid #17a2b8 !important; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 1.05rem;">
+                        <i class="fas fa-info-circle me-2 text-info"></i> <strong>Mobile Money Users:</strong> Send money to <span class="fw-bold text-danger">code 1234</span> via MTN or Airtel. After payment, upload your proof or enter your TxId below.
+                    </div>
+                    
+                    <!-- Mobile Money Proof Fields -->
+                    <div id="mobile-money-proof" style="display: none;">
+                        <div class="mb-3">
+                            <label for="transaction_id" class="form-label">Transaction ID (TxId)</label>
+                            <input type="text" class="form-control" id="transaction_id" form="checkout-form" name="transaction_id" placeholder="Enter your Mobile Money TxId">
+                        </div>
+                        <div class="mb-3">
+                            <label for="payment_proof" class="form-label">Payment Proof (screenshot)</label>
+                            <input type="file" class="form-control" id="payment_proof" form="checkout-form" name="payment_proof" accept="image/*">
+                        </div>
+                    </div>
+                    <!-- Credit Card Fields -->
+                    <div id="credit-card-form" style="display: none;">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="card_number" class="form-label">Card Number</label>
+                                <input type="text" class="form-control" id="card_number" form="checkout-form" name="card_number" placeholder="1234 5678 9012 3456">
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="expiry" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiry" form="checkout-form" name="expiry" placeholder="MM/YY">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" form="checkout-form" name="cvv" placeholder="123">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="card_name" class="form-label">Name on Card</label>
+                            <input type="text" class="form-control" id="card_name" form="checkout-form" name="card_name" placeholder="John Doe">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive mb-3">
+                        <table class="table table-sm">
+                            <tbody>
+                                {% for item in cart %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if item.product.main_image %}
+                                                    <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                {% else %}
+                                                    <img src="https://via.placeholder.com/40x40?text=Product" alt="{{ item.product.name }}" class="img-thumbnail me-2">
+                                                {% endif %}
+                                                <div>
+                                                    <small>{{ item.product.name }} x {{ item.quantity }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">{% display_price item.total_price user.country %}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>{% display_price cart.get_total_price user.country %}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <span>{% display_price 0 user.country %}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tax:</span>
+                        <span>{% display_price 0 user.country %}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total:</strong>
+                        <strong>{% display_price cart.get_total_price user.country %}</strong>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="button" id="place-order-btn" class="btn btn-primary btn-lg">
+                            <i class="fas fa-check-circle me-2"></i> Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">MLM Benefits</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i> This purchase will contribute to your MLM volume!
+                    </div>
+                    <p>PV (Product Value): <strong>${{ cart.get_total_product_value }}</strong></p>
+                    <p class="mb-0">Your sponsor will also earn a referral commission from this purchase.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle new address form
+        const addressRadios = document.querySelectorAll('input[name="address_id"]');
+        const newAddressForm = document.getElementById('new-address-form');
+        
+        if (addressRadios.length > 0 && newAddressForm) {
+            addressRadios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    if (this.id === 'address-new') {
+                        newAddressForm.style.display = 'block';
+                    } else {
+                        newAddressForm.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // Toggle payment methods
+        const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+        const creditCardForm = document.getElementById('credit-card-form');
+        const mobileMoneyProof = document.getElementById('mobile-money-proof');
+        
+        if (paymentRadios.length > 0) {
+            paymentRadios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    if (this.id === 'payment-mtn' || this.id === 'payment-airtel') {
+                        if (creditCardForm) creditCardForm.style.display = 'none';
+                        if (mobileMoneyProof) mobileMoneyProof.style.display = 'block';
+                    } else if (this.id === 'payment-credit') {
+                        if (creditCardForm) creditCardForm.style.display = 'block';
+                        if (mobileMoneyProof) mobileMoneyProof.style.display = 'none';
+                    } else {
+                        if (creditCardForm) creditCardForm.style.display = 'none';
+                        if (mobileMoneyProof) mobileMoneyProof.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // Place order button
+        const placeOrderBtn = document.getElementById('place-order-btn');
+        const checkoutForm = document.getElementById('checkout-form');
+        
+        if (placeOrderBtn && checkoutForm) {
+            placeOrderBtn.addEventListener('click', function() {
+                // Validate form
+                let isValid = true;
+                
+                // Check if using saved address
+                const usingSavedAddress = document.querySelector('input[name="address_id"]:checked:not(#address-new)');
+                
+                if (!usingSavedAddress) {
+                    // Validate new address fields
+                    const requiredFields = ['first_name', 'last_name', 'address', 'city', 'state', 'postal_code', 'country', 'phone'];
+                    
+                    requiredFields.forEach(function(field) {
+                        const input = document.getElementById(field);
+                        if (!input.value.trim()) {
+                            input.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            input.classList.remove('is-invalid');
+                        }
+                    });
+                }
+                
+                // Check payment method
+                const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+                if (!selectedPaymentMethod) {
+                    alert('Please select a payment method.');
+                    isValid = false;
+                } else {
+                    // Validate payment method specific fields
+                    if (selectedPaymentMethod.value === 'CARD') {
+                        const cardFields = ['card_number', 'expiry', 'cvv', 'card_name'];
+                        cardFields.forEach(function(field) {
+                            const input = document.getElementById(field);
+                            if (!input.value.trim()) {
+                                input.classList.add('is-invalid');
+                                isValid = false;
+                            } else {
+                                input.classList.remove('is-invalid');
+                            }
+                        });
+                    } else if (selectedPaymentMethod.value === 'MTN_MOBILE_MONEY' || selectedPaymentMethod.value === 'AIRTEL_MONEY') {
+                        // Validate mobile money fields
+                        const txId = document.getElementById('transaction_id');
+                        if (!txId.value.trim()) {
+                            txId.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            txId.classList.remove('is-invalid');
+                        }
+                    }
+                }
+                
+                if (isValid) {
+                    checkoutForm.submit();
+                } else {
+                    alert('Please fill in all required fields.');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,945 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}ShopEarn - Shop and Track Your Orders{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-white py-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, #4361ee 0%, #3a56d4 70%, #2b3595 100%);">
+    <!-- Gradient Overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at top right, rgba(79, 113, 255, 0.8) 0%, rgba(67, 97, 238, 0.6) 50%, rgba(43, 53, 149, 0.4) 100%); mix-blend-mode: multiply;"></div>
+    
+    <!-- Animated Background Elements -->
+    <div class="hero-bg-elements">
+        <div class="hero-shape hero-shape-1"></div>
+        <div class="hero-shape hero-shape-2"></div>
+        <div class="hero-shape hero-shape-3"></div>
+    </div>
+    
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+                <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInUp" style="text-shadow: 0px 2px 4px rgba(0,0,0,0.3);">
+                    <span style="color: #ffffff;">Shop.</span> 
+                    <span class="text-warning" style="text-shadow: 0px 2px 4px rgba(0,0,0,0.4);">Order.</span> 
+                    <span style="color: #8ECAE6;">Track.</span>
+                </h1>
+                <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.2);">
+                    <span style="color: #2ec4b6; font-weight: 600; text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">Welcome to our</span> <span class="text-white fw-bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">convenient</span> <span style="color: #2ec4b6; font-weight: 600; text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">shopping platform where you can</span> 
+                    <span class="text-warning fw-bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">shop quality products</span> <span style="color: #2ec4b6; font-weight: 600; text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">and</span> 
+                    <span class="text-light fw-bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">track your orders</span> <span style="color: #2ec4b6; font-weight: 600; text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">through our</span> 
+                    <span style="color: #8ECAE6; font-weight: 600; text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">user-friendly</span> <span style="color: #2ec4b6; font-weight: 600; text-shadow: 0px 1px 3px rgba(0,0,0,0.3);">dashboard.</span>
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="/products/" class="btn btn-light btn-lg px-4 me-md-2 btn-hover-effect">Shop Now</a>
+                    <a href="/accounts/register/" class="btn btn-outline-light btn-lg px-4 btn-hover-effect">Join Us</a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block text-center" data-aos="fade-left" data-aos-delay="300">
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="ShopEarn MLM Network" class="img-fluid rounded hero-image">
+                    <div class="floating-badge floating-badge-1">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Shop Easily</span>
+                    </div>
+                    <div class="floating-badge floating-badge-2">
+                        <i class="fas fa-truck"></i>
+                        <span>Track Orders</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works py-5 bg-light position-relative">
+    <div class="section-pattern-overlay"></div>
+    <div class="container">
+        <h2 class="text-center mb-5" data-aos="fade-up">How ShopEarn Works</h2>
+        
+        <!-- Process Steps -->
+        <div class="process-steps d-none d-lg-flex justify-content-center mb-5" data-aos="fade-up">
+            <div class="process-step active" data-step="1">
+                <div class="process-step-circle">1</div>
+                <div class="process-step-label">Shop</div>
+            </div>
+            <div class="process-connector"></div>
+            <div class="process-step" data-step="2">
+                <div class="process-step-circle">2</div>
+                <div class="process-step-label">Order</div>
+            </div>
+            <div class="process-connector"></div>
+            <div class="process-step" data-step="3">
+                <div class="process-step-circle">3</div>
+                <div class="process-step-label">Track</div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 border-0 shadow-sm how-it-works-card">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-container">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4 icon-circle">
+                                <i class="fas fa-shopping-cart fa-2x"></i>
+                            </div>
+                            <div class="icon-ripple"></div>
+                        </div>
+                        <h4 class="card-title">1. Shop</h4>
+                        <p class="card-text">Browse our catalog and purchase high-quality products that you love.</p>
+                        <div class="step-features mt-3">
+                            <div class="step-feature">
+                                <i class="fas fa-check-circle text-primary"></i>
+                                <span>Premium Quality</span>
+                            </div>
+                            <div class="step-feature">
+                                <i class="fas fa-check-circle text-primary"></i>
+                                <span>Secure Checkout</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 border-0 shadow-sm how-it-works-card">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-container">
+                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-4 icon-circle">
+                                <i class="fas fa-user-plus fa-2x"></i>
+                            </div>
+                            <div class="icon-ripple"></div>
+                        </div>
+                        <h4 class="card-title">2. Order</h4>
+                        <p class="card-text">Complete your purchase with our secure and easy checkout process.</p>
+                        <div class="step-features mt-3">
+                            <div class="step-feature">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Secure Checkout</span>
+                            </div>
+                            <div class="step-feature">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Multiple Payment Options</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 border-0 shadow-sm how-it-works-card">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-container">
+                            <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center mx-auto mb-4 icon-circle">
+                                <i class="fas fa-money-bill-wave fa-2x"></i>
+                            </div>
+                            <div class="icon-ripple"></div>
+                        </div>
+                        <h4 class="card-title">3. Track</h4>
+                        <p class="card-text">Monitor your order status and delivery progress through our user-friendly dashboard.</p>
+                        <div class="step-features mt-3">
+                            <div class="step-feature">
+                                <i class="fas fa-check-circle text-warning"></i>
+                                <span>Real-time Updates</span>
+                            </div>
+                            <div class="step-feature">
+                                <i class="fas fa-check-circle text-warning"></i>
+                                <span>Order History</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="400">
+            <a href="/products/" class="btn btn-primary btn-lg btn-hover-effect">Browse Our Products</a>
+        </div>
+    </div>
+</section>
+
+<!-- Shopping Benefits -->
+<section class="shopping-benefits py-5">
+    <style>
+        /* Custom styles for shopping benefits section */
+        .shopping-benefits {
+            background-color: #f8f9fa;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shopping-benefits::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234361ee' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #4361ee, #3a56d4);
+            border-radius: 3px;
+        }
+        
+        .benefit-item {
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .benefit-header {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .benefit-btn {
+            width: 100%;
+            text-align: left;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .benefit-btn:hover, .benefit-btn:focus {
+            text-decoration: none;
+            color: #4361ee;
+        }
+        
+        .benefit-body {
+            padding: 20px;
+            background-color: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .benefit-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .benefit-stat {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            min-width: 100px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #4361ee;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .shopping-image-container {
+            position: relative;
+            padding: 20px;
+            border-radius: 10px;
+            overflow: visible;
+        }
+        
+        .shopping-main-image {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            border-radius: 10px;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .shopping-main-image:hover {
+            transform: translateY(-5px);
+        }
+        
+        .shopping-stats-card {
+            position: absolute;
+            background: white;
+            border-radius: 10px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .shopping-stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .shopping-stats-card-1 {
+            top: 10%;
+            right: -30px;
+            background: linear-gradient(135deg, #4361ee, #3a56d4);
+            color: white;
+        }
+        
+        .shopping-stats-card-2 {
+            bottom: 40%;
+            left: -30px;
+            background: linear-gradient(135deg, #2ec4b6, #1a9c8f);
+            color: white;
+        }
+        
+        .shopping-stats-card-3 {
+            bottom: 10%;
+            right: 10%;
+            background: linear-gradient(135deg, #ff9f1c, #e67e00);
+            color: white;
+        }
+        
+        .shopping-stats-icon {
+            margin-right: 10px;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .shopping-stats-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .shopping-stats-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        
+        .shopping-stats-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 991px) {
+            .shopping-stats-card {
+                position: relative;
+                display: inline-flex;
+                margin: 10px;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+            }
+            
+            .shopping-image-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding-bottom: 30px;
+            }
+            
+            .shopping-main-image {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-lg-2" data-aos="fade-left">
+                <h2 class="mb-4 section-title">Why Shop With <span class="text-primary">ShopEarn</span>?</h2>
+                
+                <div class="benefits-accordion" id="benefitsAccordion">
+                    <div class="benefit-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="benefit-header" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link benefit-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <i class="fas fa-box text-primary me-2"></i> Quality Products
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#benefitsAccordion">
+                            <div class="benefit-body">
+                                <p>We offer a wide range of high-quality products that are carefully selected to meet your needs. Our products are sourced from trusted suppliers to ensure customer satisfaction.</p>
+                                <div class="benefit-stats">
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">100%</div>
+                                        <div class="stat-label">Quality Assured</div>
+                                    </div>
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">1000+</div>
+                                        <div class="stat-label">Products</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="benefit-header" id="headingTwo">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link benefit-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="fas fa-truck text-success me-2"></i> Fast Delivery
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-bs-parent="#benefitsAccordion">
+                            <div class="benefit-body">
+                                <p>We partner with reliable shipping companies to ensure your orders are delivered quickly and safely. Track your shipments in real-time through our user-friendly dashboard.</p>
+                                <div class="benefit-stats">
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">3-5</div>
+                                        <div class="stat-label">Days Delivery</div>
+                                    </div>
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">Real-time</div>
+                                        <div class="stat-label">Tracking</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="benefit-header" id="headingThree">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link benefit-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <i class="fas fa-shield-alt text-warning me-2"></i> Secure Shopping
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-bs-parent="#benefitsAccordion">
+                            <div class="benefit-body">
+                                <p>Shop with confidence knowing that your personal and payment information is protected with industry-standard security measures. We offer multiple secure payment options for your convenience.</p>
+                                <div class="benefit-stats">
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">100%</div>
+                                        <div class="stat-label">Secure</div>
+                                    </div>
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">Multiple</div>
+                                        <div class="stat-label">Payment Options</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item" data-aos="fade-up" data-aos-delay="400">
+                        <div class="benefit-header" id="headingFour">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link benefit-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    <i class="fas fa-headset text-danger me-2"></i> Customer Support
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-bs-parent="#benefitsAccordion">
+                            <div class="benefit-body">
+                                <p>Our dedicated customer support team is ready to assist you with any questions or concerns. We're committed to providing an exceptional shopping experience from start to finish.</p>
+                                <div class="benefit-stats">
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">24/7</div>
+                                        <div class="stat-label">Support</div>
+                                    </div>
+                                    <div class="benefit-stat">
+                                        <div class="stat-value">Quick</div>
+                                        <div class="stat-label">Response</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1 mb-5 mb-lg-0 text-center" data-aos="fade-right">
+                <div class="shopping-image-container position-relative">
+                    <img src="https://images.unsplash.com/photo-1607082350899-7e105aa886ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Online Shopping" class="img-fluid rounded shopping-main-image">
+                    
+                    <div class="shopping-stats-card shopping-stats-card-1" data-aos="fade-left" data-aos-delay="200">
+                        <div class="shopping-stats-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="shopping-stats-content">
+                            <div class="shopping-stats-value">4.9</div>
+                            <div class="shopping-stats-label">Rating</div>
+                        </div>
+                    </div>
+                    
+                    <div class="shopping-stats-card shopping-stats-card-2" data-aos="fade-right" data-aos-delay="300">
+                        <div class="shopping-stats-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="shopping-stats-content">
+                            <div class="shopping-stats-value">1000+</div>
+                            <div class="shopping-stats-label">Products</div>
+                        </div>
+                    </div>
+                    
+                    <div class="shopping-stats-card shopping-stats-card-3" data-aos="fade-up" data-aos-delay="400">
+                        <div class="shopping-stats-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="shopping-stats-content">
+                            <div class="shopping-stats-value">5000+</div>
+                            <div class="shopping-stats-label">Customers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials py-5 bg-light position-relative">
+    <div class="section-pattern-overlay pattern-light"></div>
+    <div class="container">
+        <h2 class="text-center mb-5" data-aos="fade-up">What Our <span class="text-primary">Customers</span> Say</h2>
+        
+        <!-- Testimonial Stats -->
+        <div class="testimonial-stats text-center mb-5" data-aos="fade-up">
+            <div class="row">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="testimonial-stat">
+                        <div class="stat-value" data-count="5000">0</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="testimonial-stat">
+                        <div class="stat-value" data-count="98">0</div>
+                        <div class="stat-label">Satisfaction Rate</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="testimonial-stat">
+                        <div class="stat-value" data-count="1.2">0</div>
+                        <div class="stat-label">Million Products Sold</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="testimonial-stat">
+                        <div class="stat-value" data-count="24">0</div>
+                        <div class="stat-label">Countries Served</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="testimonial-slider position-relative">
+            <div class="row">
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card h-100 border-0 shadow-sm testimonial-card">
+                        <div class="card-body p-4">
+                            <div class="testimonial-rating mb-4">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <span class="ms-2 rating-text">5.0</span>
+                            </div>
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-left text-primary opacity-25 fa-2x position-absolute start-0 top-0 m-3"></i>
+                                <p class="card-text mb-4 position-relative">"I've been shopping with ShopEarn for 6 months and I'm very impressed with the quality of products and the easy order tracking system. Delivery is always on time!"</p>
+                            </div>
+                            <div class="d-flex align-items-center testimonial-author">
+                                <div class="testimonial-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3">
+                                    <span class="fw-bold">JD</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">John Doe</h6>
+                                    <div class="author-rank">
+                                        <span class="badge bg-primary">Verified Customer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-stats mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <div class="testimonial-stat-mini">
+                                        <i class="fas fa-shopping-cart text-primary"></i>
+                                        <span>15+ Orders</span>
+                                    </div>
+                                    <div class="testimonial-stat-mini">
+                                        <i class="fas fa-calendar-alt text-primary"></i>
+                                        <span>6 Months</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card h-100 border-0 shadow-sm testimonial-card featured">
+                        <div class="featured-badge">Featured</div>
+                        <div class="card-body p-4">
+                            <div class="testimonial-rating mb-4">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <span class="ms-2 rating-text">5.0</span>
+                            </div>
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-left text-success opacity-25 fa-2x position-absolute start-0 top-0 m-3"></i>
+                                <p class="card-text mb-4 position-relative">"The products are amazing and the customer service is exceptional. I love how easy it is to track my orders and the delivery is always faster than expected."</p>
+                            </div>
+                            <div class="d-flex align-items-center testimonial-author">
+                                <div class="testimonial-avatar rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3">
+                                    <span class="fw-bold">JS</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Jane Smith</h6>
+                                    <div class="author-rank">
+                                        <span class="badge bg-success">Premium Customer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-stats mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <div class="testimonial-stat-mini">
+                                        <i class="fas fa-shopping-bag text-success"></i>
+                                        <span>30+ Orders</span>
+                                    </div>
+                                    <div class="testimonial-stat-mini">
+                                        <i class="fas fa-calendar-alt text-success"></i>
+                                        <span>1 Year</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card h-100 border-0 shadow-sm testimonial-card">
+                        <div class="card-body p-4">
+                            <div class="testimonial-rating mb-4">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <span class="ms-2 rating-text">5.0</span>
+                            </div>
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-left text-warning opacity-25 fa-2x position-absolute start-0 top-0 m-3"></i>
+                                <p class="card-text mb-4 position-relative">"What I love about ShopEarn is the transparency. The dashboard shows exactly where my order is and the support team is always helpful when I have questions."</p>
+                            </div>
+                            <div class="d-flex align-items-center testimonial-author">
+                                <div class="testimonial-avatar rounded-circle bg-warning text-white d-flex align-items-center justify-content-center me-3">
+                                    <span class="fw-bold">RJ</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Robert Johnson</h6>
+                                    <div class="author-rank">
+                                        <span class="badge bg-warning text-dark">Loyal Customer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-stats mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <div class="testimonial-stat-mini">
+                                        <i class="fas fa-box text-warning"></i>
+                                        <span>50+ Orders</span>
+                                    </div>
+                                    <div class="testimonial-stat-mini">
+                                        <i class="fas fa-calendar-alt text-warning"></i>
+                                        <span>2 Years</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4" data-aos="fade-up">
+            <a href="/accounts/about/#testimonials" class="btn btn-outline-primary btn-lg btn-hover-effect">Read More Customer Reviews</a>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section py-5 position-relative" style="background: linear-gradient(135deg, #4361ee 0%, #3a56d4 70%, #2b3595 100%);">
+    <!-- Gradient Overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at bottom left, rgba(79, 113, 255, 0.8) 0%, rgba(67, 97, 238, 0.6) 50%, rgba(43, 53, 149, 0.4) 100%); mix-blend-mode: multiply;"></div>
+    <div class="cta-bg-overlay"></div>
+    <div class="container text-center position-relative">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2 class="mb-4 display-4 fw-bold text-white">Ready to Start <span class="text-warning">Shopping</span>?</h2>
+            <p class="lead mb-4 text-white">Join thousands of satisfied customers who enjoy the ShopEarn experience.</p>
+            
+            <div class="cta-features mb-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <div class="cta-feature">
+                            <div class="cta-feature-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="cta-feature-text">Quick Start</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <div class="cta-feature">
+                            <div class="cta-feature-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div class="cta-feature-text">24/7 Support</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <div class="cta-feature">
+                            <div class="cta-feature-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="cta-feature-text">Training Materials</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="cta-feature">
+                            <div class="cta-feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="cta-feature-text">Community Access</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="/accounts/register/" class="btn btn-light btn-lg px-5 py-3 me-3 btn-hover-effect">
+                    <i class="fas fa-user-plus me-2"></i> Sign Up Now
+                </a>
+                <a href="/accounts/about/" class="btn btn-outline-light btn-lg px-5 py-3 btn-hover-effect">
+                    <i class="fas fa-info-circle me-2"></i> Learn More
+                </a>
+            </div>
+            
+            <div class="cta-countdown mt-5">
+                <div class="countdown-text">Limited time offer: Get 50% off your first purchase when you sign up today!</div>
+                <div class="countdown-timer" id="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-days">00</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-hours">00</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-minutes">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-seconds">00</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Initialize Countdown Timer -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set the countdown date (7 days from now)
+        const countdownDate = new Date();
+        countdownDate.setDate(countdownDate.getDate() + 7);
+        
+        // Update the countdown every 1 second
+        const countdownTimer = setInterval(function() {
+            // Get current date and time
+            const now = new Date().getTime();
+            
+            // Find the distance between now and the countdown date
+            const distance = countdownDate - now;
+            
+            // Time calculations for days, hours, minutes and seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Display the result
+            document.getElementById("countdown-days").innerHTML = days.toString().padStart(2, '0');
+            document.getElementById("countdown-hours").innerHTML = hours.toString().padStart(2, '0');
+            document.getElementById("countdown-minutes").innerHTML = minutes.toString().padStart(2, '0');
+            document.getElementById("countdown-seconds").innerHTML = seconds.toString().padStart(2, '0');
+            
+            // If the countdown is finished, clear the interval
+            if (distance < 0) {
+                clearInterval(countdownTimer);
+                document.getElementById("countdown").innerHTML = "EXPIRED";
+            }
+        }, 1000);
+        
+        // Initialize counter animation for testimonial stats
+        const statElements = document.querySelectorAll('.testimonial-stat .stat-value');
+        
+        const animateCounter = (el) => {
+            const target = parseFloat(el.getAttribute('data-count'));
+            const duration = 2000; // 2 seconds
+            const step = target / (duration / 16); // 60fps
+            let current = 0;
+            
+            const updateCounter = () => {
+                current += step;
+                if (current < target) {
+                    if (target >= 100) {
+                        el.textContent = Math.floor(current).toLocaleString();
+                    } else {
+                        el.textContent = current.toFixed(1);
+                    }
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    if (target >= 100) {
+                        el.textContent = Math.floor(target).toLocaleString();
+                    } else {
+                        el.textContent = target.toFixed(1) + 'M';
+                    }
+                }
+            };
+            
+            updateCounter();
+        };
+        
+        // Use Intersection Observer to trigger counter animation when visible
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statElements.forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
+
+<!-- Featured Products -->
+<section class="featured-products py-5 position-relative" style="background: linear-gradient(135deg, #f8f9fc 0%, #edf2f4 100%);">
+    <!-- Pattern Overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%234361ee\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); opacity: 0.5;"></div>
+    <div class="container position-relative">
+        <h2 class="text-center mb-5 display-4 fw-bold" data-aos="fade-up">Discover Our <span class="text-primary">Featured Products</span></h2>
+        <div class="row">
+            {% if featured_products %}
+                {% for product in featured_products %}
+                    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:"100" }}">
+                        <div class="card product-card h-100 product-card-animated">
+                            <div class="product-badge">Featured</div>
+                            {% if product.main_image %}
+                                <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://img.freepik.com/free-photo/shopping-concept-close-up-portrait-young-beautiful-attractive-redhair-girl-smiling-looking-camera_1258-119090.jpg" class="card-img-top" alt="{{ product.name }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div>
+                                        {% if product.is_on_sale and product.discount_price %}
+                                            <span class="price">${{ product.discount_price }}</span>
+                                            <span class="discount-price">${{ product.price }}</span>
+                                            <span class="discount-badge">Sale</span>
+                                        {% else %}
+                                            <span class="price">${{ product.price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <a href="/products/{{ product.id }}/{{ product.slug }}/" class="btn btn-primary btn-hover-effect">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card product-card h-100 product-card-animated">
+                        <div class="product-badge">Featured</div>
+                        <img src="https://img.freepik.com/free-photo/dietary-supplements-dark-table_144627-30676.jpg" class="card-img-top" alt="Premium Health Supplement">
+                        <div class="card-body">
+                            <h5 class="card-title">Premium Health Supplement</h5>
+                            <p class="card-text">Boost your immune system with our premium health supplement, packed with essential vitamins and minerals.</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="price">$49.99</span>
+                                </div>
+                                <a href="#" class="btn btn-primary btn-hover-effect">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card product-card h-100 product-card-animated">
+                        <div class="product-badge">Featured</div>
+                        <div class="discount-ribbon">-20%</div>
+                        <img src="https://img.freepik.com/free-photo/flat-lay-natural-cosmetics-arrangement_23-2148613773.jpg" class="card-img-top" alt="Organic Skincare Set">
+                        <div class="card-body">
+                            <h5 class="card-title">Organic Skincare Set</h5>
+                            <p class="card-text">Pamper your skin with our organic skincare set, made with natural ingredients for a radiant complexion.</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="price">$79.99</span>
+                                    <span class="discount-price">$99.99</span>
+                                    <span class="discount-badge">Sale</span>
+                                </div>
+                                <a href="#" class="btn btn-primary btn-hover-effect">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card product-card h-100 product-card-animated">
+                        <div class="product-badge">Featured</div>
+                        <img src="https://img.freepik.com/free-photo/smart-watch-with-fitness-health-tracking-apps-display_53876-97181.jpg" class="card-img-top" alt="Smart Fitness Tracker">
+                        <div class="card-body">
+                            <h5 class="card-title">Smart Fitness Tracker</h5>
+                            <p class="card-text">Track your fitness goals with our advanced smart fitness tracker, featuring heart rate monitoring and sleep analysis.</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="price">$129.99</span>
+                                </div>
+                                <a href="#" class="btn btn-primary btn-hover-effect">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="400">
+            <a href="/products/" class="btn btn-primary btn-lg btn-hover-effect px-5 py-3">
+                <i class="fas fa-shopping-cart me-2"></i> View All Products
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

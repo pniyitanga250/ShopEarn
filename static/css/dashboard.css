@@ -1,0 +1,15 @@
+/* Cleaned dashboard.css: All MLM and unrelated styles removed. Only keep minimal product dashboard styles. */
+.stat-card {
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card.primary {
+    background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+    color: white;
+}

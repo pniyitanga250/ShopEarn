@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Edit Profile - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Profile</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="phone_number">Phone Number</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}">
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="country">Country</label>
+                            <select class="form-control" id="country" name="country">
+                                <option value="" {% if not user.country %}selected{% endif %}>Select your country</option>
+                                <option value="RW" {% if user.country == 'RW' %}selected{% endif %}>Rwanda (RWF)</option>
+                                <option value="BI" {% if user.country == 'BI' %}selected{% endif %}>Burundi (BIF)</option>
+                                <option value="KE" {% if user.country == 'KE' %}selected{% endif %}>Kenya (KES)</option>
+                                <option value="UG" {% if user.country == 'UG' %}selected{% endif %}>Uganda (UGX)</option>
+                                <option value="CD" {% if user.country == 'CD' %}selected{% endif %}>DR Congo (CDF)</option>
+                                <option value="TZ" {% if user.country == 'TZ' %}selected{% endif %}>Tanzania (TZS)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="profile_picture">Profile Picture</label>
+                            <input type="file" class="form-control" id="profile_picture" name="profile_picture">
+                            {% if user.profile_picture %}
+                                <div class="mt-2">
+                                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail" style="max-width: 150px;">
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="{% url 'shop_accounts:profile' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

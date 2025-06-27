@@ -1,0 +1,97 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Contact Us - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Contact Us</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Get in Touch</h2>
+                    <p>
+                        Have questions about our products, MLM program, or need support? 
+                        We're here to help! Fill out the form below and our team will get back to you as soon as possible.
+                    </p>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <select class="form-select" id="subject" name="subject" required>
+                                <option value="">Select a subject</option>
+                                <option value="Product Inquiry">Product Inquiry</option>
+                                <option value="MLM Program">MLM Program</option>
+                                <option value="Order Support">Order Support</option>
+                                <option value="Technical Issue">Technical Issue</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Your Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Other Ways to Reach Us</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <h3 class="h5">Customer Support</h3>
+                            <p class="mb-1"><i class="bi bi-envelope me-2"></i> peacemakerproofficial@gmail.com</p>
+                            <p><i class="bi bi-telephone me-2"></i> (250) 780475093</p>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h3 class="h5">
+                                MLM Program Support
+                                <span class="badge bg-warning text-dark ms-2">Coming Soon</span>
+                            </h3>
+                            <p class="mb-1"><i class="bi bi-envelope me-2"></i> mlm@shopearn.com</p>
+                            <p><i class="bi bi-telephone me-2"></i> (123) 456-7891</p>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h3 class="h5">Business Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM EST</p>
+                    <p>Saturday: 10:00 AM - 2:00 PM EST</p>
+                    <p>Sunday: Closed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

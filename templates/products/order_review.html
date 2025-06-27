@@ -1,0 +1,178 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load product_filters %}
+
+{% block title %}Review Products from Order #{{ order.id }} - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Review Products from Order #{{ order.id }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Thank you for your purchase! Please share your thoughts on the products you ordered. Your feedback helps other customers make informed decisions.</p>
+                    
+                    <form method="post" action="{% url 'shop_products:order_review' order.id %}">
+                        {% csrf_token %}
+                        
+                        {% for item in order_items %}
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex mb-3">
+                                        {% if item.product.main_image %}
+                                            <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                                        {% endif %}
+                                        <div>
+                                            <h5 class="mb-1">{{ item.product.name }}</h5>
+                                            <p class="text-muted mb-0">Quantity: {{ item.quantity }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    {% with product_id=item.product.id %}
+                                        {% if existing_reviews|get_item:product_id %}
+                                            {% with review=existing_reviews|get_item:product_id %}
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i> You've already reviewed this product. You can update your review below.
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Your Rating</label>
+                                                    <div class="rating-stars">
+                                                        {% for i in "12345" %}
+                                                            <input type="radio" name="rating_{{ product_id }}" id="rating_{{ product_id }}_{{ i }}" value="{{ i }}" {% if review.rating == i|add:"0" %}checked{% endif %} required>
+                                                            <label for="rating_{{ product_id }}_{{ i }}"><i class="fas fa-star"></i></label>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="rating-text mt-1">
+                                                        <small class="text-muted">Current rating: <span id="rating_text_{{ product_id }}">{% if review.rating %}{{ review.rating }} star{% if review.rating > 1 %}s{% endif %}{% else %}Not rated yet{% endif %}</span></small>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label for="comment_{{ product_id }}" class="form-label">Your Review</label>
+                                                    <textarea class="form-control" id="comment_{{ product_id }}" name="comment_{{ product_id }}" rows="3" required>{{ review.comment }}</textarea>
+                                                </div>
+                                            {% endwith %}
+                                        {% else %}
+                                            <div class="mb-3">
+                                                <label class="form-label">Your Rating</label>
+                                                <div class="rating-stars">
+                                                    {% for i in "12345" %}
+                                                        <input type="radio" name="rating_{{ product_id }}" id="rating_{{ product_id }}_{{ i }}" value="{{ i }}" required>
+                                                        <label for="rating_{{ product_id }}_{{ i }}"><i class="fas fa-star"></i></label>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="rating-text mt-1">
+                                                    <small class="text-muted">Current rating: <span id="rating_text_{{ product_id }}">Not rated yet</span></small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="comment_{{ product_id }}" class="form-label">Your Review</label>
+                                                <textarea class="form-control" id="comment_{{ product_id }}" name="comment_{{ product_id }}" rows="3" placeholder="Share your experience with this product..." required></textarea>
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'shop_orders:order_detail' order.id %}" class="btn btn-secondary">Back to Order</a>
+                            <button type="submit" class="btn btn-primary">Submit Reviews</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .rating-stars {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    
+    .rating-stars input {
+        display: none;
+    }
+    
+    .rating-stars label {
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #ddd;
+        margin-right: 5px;
+    }
+    
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input:checked ~ label {
+        color: #ffc107;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize star ratings
+        const ratingContainers = document.querySelectorAll('.rating-stars');
+        
+        ratingContainers.forEach(container => {
+            const stars = container.querySelectorAll('label');
+            
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function() {
+                    // Reset all stars
+                    stars.forEach(s => s.style.color = '#ddd');
+                    
+                    // Highlight current star and all stars before it
+                    this.style.color = '#ffc107';
+                    let prevSibling = this.previousElementSibling?.previousElementSibling;
+                    while (prevSibling) {
+                        if (prevSibling.tagName === 'LABEL') {
+                            prevSibling.style.color = '#ffc107';
+                        }
+                        prevSibling = prevSibling.previousElementSibling;
+                    }
+                });
+                
+                star.addEventListener('mouseout', function() {
+                    // Reset to checked state
+                    stars.forEach(s => s.style.color = '#ddd');
+                    
+                    const checkedInput = container.querySelector('input:checked');
+                    if (checkedInput) {
+                        let nextSibling = checkedInput.nextElementSibling;
+                        while (nextSibling) {
+                            if (nextSibling.tagName === 'LABEL') {
+                                nextSibling.style.color = '#ffc107';
+                            }
+                            nextSibling = nextSibling.nextElementSibling;
+                        }
+                    }
+                });
+                
+                // Update rating text when clicked
+                star.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    const productId = input.name.split('_')[1];
+                    const ratingValue = input.value;
+                    const ratingText = document.getElementById(`rating_text_${productId}`);
+                    
+                    if (ratingText) {
+                        ratingText.textContent = `${ratingValue} star${ratingValue > 1 ? 's' : ''}`;
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

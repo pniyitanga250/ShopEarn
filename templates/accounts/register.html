@@ -1,0 +1,899 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Register - ShopEarn{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-section {
+        min-height: calc(100vh - 72px);
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.2;
+        z-index: 2;
+    }
+    
+    .auth-container {
+        position: relative;
+        z-index: 10;
+    }
+    
+    .auth-card {
+        border-radius: var(--border-radius-lg);
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        transition: var(--transition-medium);
+        transform: translateY(0);
+        background-color: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .auth-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    }
+    
+    .auth-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Floating elements */
+    .floating-shape {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: 3;
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .floating-shape-1 {
+        width: 100px;
+        height: 100px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    
+    .floating-shape-2 {
+        width: 150px;
+        height: 150px;
+        top: 60%;
+        left: 80%;
+        animation-delay: 2s;
+    }
+    
+    .floating-shape-3 {
+        width: 80px;
+        height: 80px;
+        top: 80%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0.5;
+        }
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+            opacity: 0.8;
+        }
+        100% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0.5;
+        }
+    }
+    
+    .auth-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+        transform: rotate(30deg);
+    }
+    
+    .auth-header h3 {
+        position: relative;
+        z-index: 1;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+    
+    .auth-body {
+        padding: 2.5rem;
+    }
+    
+    .auth-input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .auth-input {
+        width: 100%;
+        border-radius: var(--border-radius-md);
+        padding: 1rem 1rem 1rem 3rem;
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        background-color: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        color: var(--dark-color);
+    }
+    
+    .auth-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+        background-color: #fff;
+        outline: none;
+    }
+    
+    .auth-input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-medium);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .auth-input:focus + .auth-input-icon {
+        color: var(--primary-color);
+    }
+    
+    .auth-input-label {
+        position: absolute;
+        left: 3rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        font-weight: 500;
+    }
+    
+    .auth-input:focus + .auth-input-icon + .auth-input-label,
+    .auth-input:not(:placeholder-shown) + .auth-input-icon + .auth-input-label {
+        top: 0;
+        left: 1rem;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        padding: 0 0.5rem;
+        background-color: white;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    .auth-input::placeholder {
+        color: transparent;
+    }
+    
+    .input-group-text {
+        background-color: transparent;
+        border: none;
+        color: var(--gray-medium);
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .input-group-text:hover {
+        color: var(--primary-color);
+    }
+    
+    .auth-btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-radius: var(--border-radius-md);
+        transition: var(--transition-fast);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        border: none;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+    
+    .auth-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: var(--transition-fast);
+        z-index: -1;
+    }
+    
+    .auth-btn:hover::before {
+        width: 100%;
+    }
+    
+    .auth-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--btn-shadow);
+    }
+    
+    .auth-footer {
+        background-color: var(--gray-light);
+        padding: 1.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .auth-link {
+        color: var(--primary-color);
+        font-weight: 600;
+        transition: var(--transition-fast);
+    }
+    
+    .auth-link:hover {
+        color: var(--primary-dark);
+        text-decoration: none;
+    }
+    
+    .password-toggle {
+        cursor: pointer;
+        color: var(--gray-medium);
+        transition: var(--transition-fast);
+    }
+    
+    .password-toggle:hover {
+        color: var(--primary-color);
+    }
+    
+    .auth-decoration {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0) 70%);
+        z-index: 0;
+    }
+    
+    .auth-decoration-1 {
+        top: -150px;
+        right: -150px;
+    }
+    
+    .auth-decoration-2 {
+        bottom: -150px;
+        left: -150px;
+    }
+    
+    .password-strength-container {
+        position: relative;
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .password-strength {
+        height: 6px;
+        border-radius: 10px;
+        margin-top: 8px;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background-color: #e9ecef;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .password-strength-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .password-strength-text {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 5px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .password-requirements {
+        margin-top: 15px;
+        background-color: rgba(0, 0, 0, 0.02);
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .password-requirement {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 0.8rem;
+        color: var(--gray-medium);
+        transition: all 0.3s ease;
+    }
+    
+    .password-requirement:last-child {
+        margin-bottom: 0;
+    }
+    
+    .password-requirement i {
+        margin-right: 8px;
+        font-size: 0.8rem;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+    
+    .requirement-met {
+        color: var(--success-color);
+    }
+    
+    .requirement-met i {
+        background-color: rgba(46, 196, 182, 0.1);
+    }
+    
+    .requirement-not-met {
+        color: var(--gray-medium);
+    }
+    
+    .requirement-not-met i {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .auth-btn {
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-radius: var(--border-radius-md);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        border: none;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        font-size: 1.1rem;
+    }
+    
+    .auth-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: all 0.6s ease;
+        z-index: -1;
+    }
+    
+    .auth-btn:hover::before {
+        left: 100%;
+    }
+    
+    .auth-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4);
+    }
+    
+    .auth-btn:active {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+    }
+    
+    .auth-btn .btn-icon {
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .auth-btn:hover .btn-icon {
+        transform: translateX(-3px);
+    }
+    
+    .registration-steps {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .registration-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 1rem;
+        position: relative;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step-active .step-number {
+        background-color: #4361ee;
+        color: white;
+        transform: scale(1.2);
+        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
+    }
+    
+    .step-number::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: -1;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .step-active .step-number::before {
+        opacity: 1;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 0.2;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+    }
+    
+    .step-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        text-shadow: none;
+    }
+    
+    .step-active .step-label {
+        color: #4361ee;
+        transform: scale(1.1);
+    }
+    
+    .step-connector {
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, #dee2e6, #e9ecef);
+        margin-top: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .step-connector::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background-color: white;
+        transition: all 0.5s ease;
+    }
+    
+    .step-active + .step-connector::before {
+        width: 100%;
+    }
+    
+    .sponsor-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: rgba(67, 97, 238, 0.1);
+        color: var(--primary-color);
+        border-radius: var(--border-radius-md);
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .sponsor-badge i {
+        margin-right: 0.5rem;
+    }
+    
+    .terms-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 1.2rem;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 1.5rem;
+        border: 2px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    @keyframes pulse-animation {
+        0% {
+            opacity: 0.7;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0.7;
+        }
+    }
+    
+    .pulse-animation {
+        animation: pulse-animation 0.5s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <!-- Background pattern -->
+    <div class="auth-pattern"></div>
+    
+    <!-- Floating shapes -->
+    <div class="floating-shape floating-shape-1"></div>
+    <div class="floating-shape floating-shape-2"></div>
+    <div class="floating-shape floating-shape-3"></div>
+    
+    <div class="container auth-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4" data-aos="fade-down">
+                    <h2 class="fw-bold mb-2" style="color: #212529; text-shadow: none;">Join ShopEarn Today</h2>
+                    <p style="color: #4a4a4a; text-shadow: none;">Create your account and start earning with our MLM platform</p>
+                </div>
+                
+                <div class="registration-steps d-none d-md-flex" data-aos="fade-up">
+                    <div class="registration-step step-active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Create Account</div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="registration-step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Complete Profile</div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="registration-step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Start Earning</div>
+                    </div>
+                </div>
+                
+                <div class="auth-card" data-aos="fade-up">
+                    <div class="auth-header text-center">
+                        <h3 class="text-white">Create Your Account</h3>
+                    </div>
+                    
+                    <div class="auth-body">
+                        {% if sponsor %}
+                        <div class="sponsor-badge text-center mb-4">
+                            <i class="fas fa-user-plus"></i> Referred by: <strong>{{ sponsor }}</strong>
+                        </div>
+                        {% endif %}
+                        
+                        <form method="post" id="registrationForm">
+                            {% csrf_token %}
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="auth-input-group">
+                                        <input type="text" class="auth-input" id="username" name="username" placeholder="Choose a username" required>
+                                        <i class="fas fa-user auth-input-icon"></i>
+                                        <label for="username" class="auth-input-label">Username</label>
+                                    </div>
+                                    <div class="form-text" style="color: #6c757d;">Your unique identifier on ShopEarn</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="auth-input-group">
+                                        <input type="email" class="auth-input" id="email" name="email" placeholder="Enter your email" required>
+                                        <i class="fas fa-envelope auth-input-icon"></i>
+                                        <label for="email" class="auth-input-label">Email</label>
+                                    </div>
+                                    <div class="form-text">We'll send a verification link to this email</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="auth-input-group">
+                                        <input type="password" class="auth-input" id="password" name="password" placeholder="Create a password" required onkeyup="checkPasswordStrength()">
+                                        <i class="fas fa-lock auth-input-icon"></i>
+                                        <label for="password" class="auth-input-label">Password</label>
+                                        <span class="input-group-text" onclick="togglePassword('password')">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="password-strength-container">
+                                        <div class="password-strength">
+                                            <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                                        </div>
+                                        <div class="password-strength-text" id="passwordStrengthText">
+                                            <span>Password Strength</span>
+                                            <span id="strengthLabel"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="password-requirements">
+                                        <div class="password-requirement" id="length-requirement">
+                                            <i class="fas fa-circle"></i> At least 8 characters
+                                        </div>
+                                        <div class="password-requirement" id="uppercase-requirement">
+                                            <i class="fas fa-circle"></i> At least 1 uppercase letter
+                                        </div>
+                                        <div class="password-requirement" id="number-requirement">
+                                            <i class="fas fa-circle"></i> At least 1 number
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="auth-input-group">
+                                        <input type="password" class="auth-input" id="password_confirm" name="password_confirm" placeholder="Confirm your password" required onkeyup="checkPasswordMatch()">
+                                        <i class="fas fa-lock auth-input-icon"></i>
+                                        <label for="password_confirm" class="auth-input-label">Confirm Password</label>
+                                        <span class="input-group-text" onclick="togglePassword('password_confirm')">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                    <div class="form-text" id="passwordMatch"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="auth-input-group">
+                                    <select class="auth-input" id="country" name="country" required>
+                                        <option value="" disabled selected>Select your country</option>
+                                        <option value="RW">Rwanda (RWF)</option>
+                                        <option value="BI">Burundi (BIF)</option>
+                                        <option value="KE">Kenya (KES)</option>
+                                        <option value="UG">Uganda (UGX)</option>
+                                        <option value="CD">DR Congo (CDF)</option>
+                                        <option value="TZ">Tanzania (TZS)</option>
+                                    </select>
+                                    <i class="fas fa-globe auth-input-icon"></i>
+                                    <label for="country" class="auth-input-label">Country</label>
+                                </div>
+                                <div class="form-text">Select your country and currency</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="auth-input-group">
+                                    <input type="text" class="auth-input" id="sponsor" name="sponsor" placeholder="Enter sponsor's username" value="{{ sponsor|default:'' }}">
+                                    <i class="fas fa-user-plus auth-input-icon"></i>
+                                    <label for="sponsor" class="auth-input-label">Sponsor (Optional)</label>
+                                </div>
+                                <div class="form-text">If someone referred you, enter their username here</div>
+                            </div>
+                            
+                            <div class="terms-container mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>
+                                    </label>
+                                </div>
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter">
+                                    <label class="form-check-label" for="newsletter">
+                                        I want to receive news, updates, and promotional emails
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn auth-btn btn-primary btn-lg" id="registerButton">
+                                    <i class="fas fa-user-plus btn-icon"></i> Create Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="auth-footer text-center">
+                        <div>
+                            Already have an account? <a href="{% url 'shop_accounts:login' %}" class="auth-link">Login here</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="400">
+                    <p class="text-white-50" style="text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                        By creating an account, you agree to our <a href="#" class="text-white">Terms of Service</a>, 
+                        <a href="#" class="text-white">Privacy Policy</a>, and <a href="#" class="text-white">MLM Compensation Plan</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function togglePassword(inputId) {
+        const passwordInput = document.getElementById(inputId);
+        const icon = passwordInput.nextElementSibling.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    
+    function checkPasswordStrength() {
+        const password = document.getElementById('password').value;
+        const strengthFill = document.getElementById('passwordStrengthFill');
+        const strengthLabel = document.getElementById('strengthLabel');
+        
+        // Check requirements
+        const lengthRequirement = document.getElementById('length-requirement');
+        const uppercaseRequirement = document.getElementById('uppercase-requirement');
+        const numberRequirement = document.getElementById('number-requirement');
+        
+        // Reset classes
+        lengthRequirement.className = 'password-requirement requirement-not-met';
+        uppercaseRequirement.className = 'password-requirement requirement-not-met';
+        numberRequirement.className = 'password-requirement requirement-not-met';
+        
+        // Check each requirement with animation
+        if (password.length >= 8) {
+            lengthRequirement.className = 'password-requirement requirement-met';
+            lengthRequirement.innerHTML = '<i class="fas fa-check-circle"></i> At least 8 characters';
+        } else {
+            lengthRequirement.innerHTML = '<i class="fas fa-circle"></i> At least 8 characters';
+        }
+        
+        if (/[A-Z]/.test(password)) {
+            uppercaseRequirement.className = 'password-requirement requirement-met';
+            uppercaseRequirement.innerHTML = '<i class="fas fa-check-circle"></i> At least 1 uppercase letter';
+        } else {
+            uppercaseRequirement.innerHTML = '<i class="fas fa-circle"></i> At least 1 uppercase letter';
+        }
+        
+        if (/[0-9]/.test(password)) {
+            numberRequirement.className = 'password-requirement requirement-met';
+            numberRequirement.innerHTML = '<i class="fas fa-check-circle"></i> At least 1 number';
+        } else {
+            numberRequirement.innerHTML = '<i class="fas fa-circle"></i> At least 1 number';
+        }
+        
+        // Calculate strength
+        let strength = 0;
+        if (password.length >= 8) strength += 1;
+        if (password.length >= 12) strength += 1;
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+        
+        // Update UI based on strength with enhanced animations
+        let width, color, text;
+        
+        switch (strength) {
+            case 0:
+                width = '0%';
+                color = '';
+                text = '';
+                break;
+            case 1:
+                width = '20%';
+                color = '#e74a3b';
+                text = 'Very Weak';
+                break;
+            case 2:
+                width = '40%';
+                color = '#f6c23e';
+                text = 'Weak';
+                break;
+            case 3:
+                width = '60%';
+                color = '#4cc9f0';
+                text = 'Medium';
+                break;
+            case 4:
+                width = '80%';
+                color = '#2ec4b6';
+                text = 'Strong';
+                break;
+            case 5:
+                width = '100%';
+                color = '#2ec4b6';
+                text = 'Very Strong';
+                break;
+        }
+        
+        // Apply styles with smooth animation
+        strengthFill.style.width = width;
+        strengthFill.style.backgroundColor = color;
+        strengthLabel.textContent = text;
+        strengthLabel.style.color = color;
+        
+        // Add pulse animation for visual feedback
+        if (strength > 0) {
+            strengthFill.classList.add('pulse-animation');
+            setTimeout(() => {
+                strengthFill.classList.remove('pulse-animation');
+            }, 500);
+        }
+    }
+    
+    function checkPasswordMatch() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('password_confirm').value;
+        const matchText = document.getElementById('passwordMatch');
+        
+        if (confirmPassword.length === 0) {
+            matchText.textContent = '';
+            return;
+        }
+        
+        if (password === confirmPassword) {
+            matchText.textContent = 'Passwords match';
+            matchText.style.color = '#2ec4b6';
+        } else {
+            matchText.textContent = 'Passwords do not match';
+            matchText.style.color = '#e74a3b';
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registrationForm');
+        
+        form.addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password_confirm').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match. Please try again.');
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,304 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load product_filters %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}All Products{% endif %} - ShopEarn
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Sidebar with Categories -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Categories</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'shop_products:product_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">
+                        All Products
+                    </a>
+                    {% for c in categories %}
+                        <a href="{{ c.get_absolute_url }}" class="list-group-item list-group-item-action {% if category.id == c.id %}active{% endif %}">
+                            {{ c.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Filters -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Sort By</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="sort" id="sort-default" value="default" {% if sort == 'default' or not sort %}checked{% endif %}>
+                            <label class="form-check-label" for="sort-default">
+                                Default
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="sort" id="sort-price-low" value="price_low" {% if sort == 'price_low' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort-price-low">
+                                Price: Low to High
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="sort" id="sort-price-high" value="price_high" {% if sort == 'price_high' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort-price-high">
+                                Price: High to Low
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="sort" id="sort-newest" value="newest" {% if sort == 'newest' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort-newest">
+                                Newest First
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="sort" id="sort-name" value="name" {% if sort == 'name' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort-name">
+                                Name (A-Z)
+                            </label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Apply</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Grid -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    {% if category %}
+                        {{ category.name }}
+                    {% else %}
+                        All Products
+                    {% endif %}
+                </h1>
+                <span class="text-muted">{{ products|length }} products found</span>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <form method="get" class="d-flex flex-wrap" id="search-form">
+                        <div class="input-group mb-2 mb-md-0 flex-grow-1 me-md-2 position-relative">
+                            <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search_query }}" autocomplete="off">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <div id="search-loading" class="position-absolute" style="right: 60px; top: 8px; display: none;">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% if search_query %}
+                            <a href="{% url 'shop_products:product_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Clear
+                            </a>
+                        {% endif %}
+                        
+                        <!-- Preserve sort parameter if it exists -->
+                        {% if sort and sort != 'default' %}
+                            <input type="hidden" name="sort" value="{{ sort }}">
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            
+            {% if search_query %}
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-search me-2"></i> Search results for: <strong>{{ search_query }}</strong>
+                    {% if products|length == 0 %}
+                        <p class="mb-0 mt-2">No products found. Try a different search term.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            {% if category and category.description %}
+                <div class="alert alert-light mb-4">
+                    {{ category.description }}
+                </div>
+            {% endif %}
+            
+            <div class="row" id="products-container">
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card product-card h-100">
+                            {% if product.main_image %}
+                                <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/300x200?text=Product" class="card-img-top" alt="{{ product.name }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div>
+                                        {% if product.is_on_sale and product.discount_price %}
+                                            <span class="price">{% display_price product.discount_price user.country %}</span>
+                                            <span class="discount-price">{% display_price product.price user.country %}</span>
+                                        {% else %}
+                                            <span class="price">{% display_price product.price user.country %}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ product.get_absolute_url }}" class="btn btn-primary">View Details</a>
+                                        {% if product.is_in_stock %}
+                                        <form action="{% url 'shop_orders:cart_add' product.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-success">Add to Cart</button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% if product.is_on_sale %}
+                                <div class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded">
+                                    Sale
+                                </div>
+                            {% endif %}
+                            {% if not product.is_in_stock %}
+                                <div class="position-absolute top-0 start-0 bg-secondary text-white px-2 py-1 m-2 rounded">
+                                    Out of Stock
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> No products found in this category.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-submit form when sort option changes
+        const sortRadios = document.querySelectorAll('input[name="sort"]');
+        sortRadios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                this.closest('form').submit();
+            });
+        });
+
+        // Live search functionality
+        const searchInput = document.querySelector('input[name="search"]');
+        const productContainer = document.getElementById('products-container');
+        let searchTimeout;
+        
+        // Store original HTML on page load
+        if (!window.originalProductsHTML) {
+            window.originalProductsHTML = productContainer.innerHTML;
+        }
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+            
+            // Show loading indicator
+            const loadingIndicator = document.getElementById('search-loading');
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'block';
+            }
+            
+            // Debounce to avoid too many requests
+            searchTimeout = setTimeout(function() {
+                if (query.length >= 2) {
+                    // Fetch results via AJAX
+                    fetch(`/products/search/?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            updateProductDisplay(data.products);
+                            if (loadingIndicator) {
+                                loadingIndicator.style.display = 'none';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching search results:', error);
+                            if (loadingIndicator) {
+                                loadingIndicator.style.display = 'none';
+                            }
+                        });
+                } else if (query.length === 0) {
+                    // If search is cleared, reload the page to show all products
+                    window.location.href = window.location.pathname;
+                } else {
+                    // For 1 character, just hide the loading indicator
+                    if (loadingIndicator) {
+                        loadingIndicator.style.display = 'none';
+                    }
+                }
+            }, 300); // 300ms delay
+        });
+
+        function updateProductDisplay(products) {
+            if (products.length === 0) {
+                productContainer.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> No products found matching your search.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            products.forEach(product => {
+                html += `
+                    <div class="col-md-4 mb-4">
+                        <div class="card product-card h-100">
+                            <img src="${product.image_url || 'https://via.placeholder.com/300x200?text=Product'}" class="card-img-top" alt="${product.name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.name}</h5>
+                                <p class="card-text">${product.description}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div>
+                                        ${product.currency_symbol ? 
+                                            (product.is_on_sale ? 
+                                                `<span class="price">${product.currency_symbol} ${parseFloat(product.converted_discount_price).toLocaleString()}</span>
+                                                 <span class="discount-price">${product.currency_symbol} ${parseFloat(product.converted_price).toLocaleString()}</span>` : 
+                                                `<span class="price">${product.currency_symbol} ${parseFloat(product.converted_price).toLocaleString()}</span>`
+                                            ) : 
+                                            (product.is_on_sale ? 
+                                                `<span class="price">$${product.discount_price}</span>
+                                                 <span class="discount-price">$${product.price}</span>` : 
+                                                `<span class="price">$${product.price}</span>`
+                                            )
+                                        }
+                                    </div>
+                                    <a href="${product.url}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                            ${product.is_on_sale ? 
+                                `<div class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded">Sale</div>` : ''
+                            }
+                            ${!product.is_in_stock ? 
+                                `<div class="position-absolute top-0 start-0 bg-secondary text-white px-2 py-1 m-2 rounded">Out of Stock</div>` : ''
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+            productContainer.innerHTML = html;
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,250 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load product_filters %}
+{% load order_filters %}
+
+{% block title %}Order #{{ order.id }} - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Order #{{ order.id }}</h4>
+                    <span class="badge {% if order.status == 'PENDING' %}bg-warning
+                          {% elif order.status == 'PROCESSING' %}bg-info
+                          {% elif order.status == 'SHIPPED' %}bg-primary
+                          {% elif order.status == 'DELIVERED' %}bg-success
+                          {% elif order.status == 'CANCELLED' %}bg-danger
+                          {% elif order.status == 'REFUNDED' %}bg-secondary
+                          {% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Order Information</h5>
+                            <p class="mb-1"><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y, g:i a" }}</p>
+                            <p class="mb-1"><strong>Payment Status:</strong> {% if order.paid %}<span class="text-success">Paid</span>{% else %}<span class="text-danger">Under Review</span>{% endif %}</p>
+                            {% if order.paid_at %}
+                                <p class="mb-1"><strong>Payment Date:</strong> {{ order.paid_at|date:"F j, Y, g:i a" }}</p>
+                            {% endif %}
+                            {% if order.payment_method %}
+                                <p class="mb-1"><strong>Payment Method:</strong> {{ order.get_payment_method_display }}</p>
+                            {% endif %}
+                            
+                            {% if order.payment_method == 'CARD' %}
+                                {% if order.card_number %}
+                                    <p class="mb-1"><strong>Card Number:</strong> {{ order.card_number }}</p>
+                                {% endif %}
+                                {% if order.card_expiry %}
+                                    <p class="mb-1"><strong>Card Expiry:</strong> {{ order.card_expiry }}</p>
+                                {% endif %}
+                                {% if order.card_name %}
+                                    <p class="mb-1"><strong>Name on Card:</strong> {{ order.card_name }}</p>
+                                {% endif %}
+                            {% elif order.payment_method == 'MTN_MOBILE_MONEY' or order.payment_method == 'AIRTEL_MONEY' %}
+                                {% if order.transaction_id %}
+                                    <p class="mb-1"><strong>Transaction ID:</strong> {{ order.transaction_id }}</p>
+                                {% endif %}
+                                {% if order.payment_proof %}
+                                    <p class="mb-1"><strong>Payment Proof:</strong> <a href="{{ order.payment_proof.url }}" target="_blank">View</a></p>
+                                {% elif order.status == 'PENDING' and order.payment_method|in_list:"MTN_MOBILE_MONEY,AIRTEL_MONEY" %}
+                                    <div class="alert alert-warning mt-2">
+                                        <h6>Upload Payment Proof</h6>
+                                        <p class="small">Please upload a screenshot of your payment confirmation to complete your order.</p>
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#paymentProofModal">
+                                            Upload Payment Proof
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Shipping Information</h5>
+                            <p class="mb-1">{{ order.first_name }} {{ order.last_name }}</p>
+                            <p class="mb-1">{{ order.address }}</p>
+                            <p class="mb-1">{{ order.city }}, {{ order.state }} {{ order.postal_code }}</p>
+                            <p class="mb-1">{{ order.country }}</p>
+                            <p class="mb-1">{{ order.email }}</p>
+                            {% if order.phone %}
+                                <p class="mb-1">{{ order.phone }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3">Order Items</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if item.product.main_image %}
+                                                    <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                                {% endif %}
+                                                <div>
+                                                    <a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{% display_price item.price user.country %}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td class="text-end">{% display_price item.get_cost user.country %}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                    <td class="text-end">{% display_price order.get_total_cost user.country %}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
+                                    <td class="text-end">{% display_price order.shipping_cost user.country %}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td class="text-end"><strong>{% display_price order.total_price user.country %}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total PV:</strong></td>
+                                    <td class="text-end"><strong>{{ order.get_total_commission_value }}</strong> <small class="text-muted">points</small></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'shop_orders:order_history' %}" class="btn btn-secondary">Back to Orders</a>
+                        
+                        {% if order.status == 'PENDING' or order.status == 'PROCESSING' %}
+                            <button class="btn btn-danger float-end" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">Cancel Order</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if order.status == 'DELIVERED' %}
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Leave a Review</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Please consider leaving a review for the products you purchased. Your feedback helps other customers make informed decisions.</p>
+                        <div class="d-grid">
+                            <a href="{% url 'shop_products:order_review' order.id %}" class="btn btn-primary">Write a Review</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if order.status == 'PENDING' or order.status == 'PROCESSING' %}
+<!-- Cancel Order Modal -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+                <form id="cancelOrderForm" method="post" action="{% url 'shop_orders:cancel_order' order.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="cancelReason" class="form-label">Reason for Cancellation</label>
+                        <select class="form-select" id="cancelReason" name="cancel_reason" required>
+                            <option value="">Select a reason</option>
+                            <option value="Changed my mind">Changed my mind</option>
+                            <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                            <option value="Ordered by mistake">Ordered by mistake</option>
+                            <option value="Shipping takes too long">Shipping takes too long</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="otherReasonContainer" style="display: none;">
+                        <label for="otherReason" class="form-label">Please specify</label>
+                        <textarea class="form-control" id="otherReason" name="other_reason" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('cancelOrderForm').submit()">Cancel Order</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if order.status == 'PENDING' and order.payment_method|in_list:"MTN_MOBILE_MONEY,AIRTEL_MONEY" and not order.payment_proof %}
+<!-- Payment Proof Upload Modal -->
+<div class="modal fade" id="paymentProofModal" tabindex="-1" aria-labelledby="paymentProofModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentProofModalLabel">Upload Payment Proof</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please upload a screenshot of your payment confirmation to complete your order.</p>
+                <form id="paymentProofForm" method="post" action="{% url 'shop_orders:upload_payment_proof' order.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="transactionId" class="form-label">Transaction ID</label>
+                        <input type="text" class="form-control" id="transactionId" name="transaction_id" required 
+                               placeholder="Enter the transaction ID from your payment">
+                        <div class="form-text">This is the reference number or transaction ID from your mobile money payment.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentProof" class="form-label">Payment Screenshot</label>
+                        <input type="file" class="form-control" id="paymentProof" name="payment_proof" required
+                               accept="image/jpeg,image/png,image/gif,image/webp">
+                        <div class="form-text">Upload a clear screenshot of your payment confirmation (JPG, PNG, GIF or WEBP format).</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('paymentProofForm').submit()">Upload Proof</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show/hide "Other" reason text area
+        const cancelReasonSelect = document.getElementById('cancelReason');
+        const otherReasonContainer = document.getElementById('otherReasonContainer');
+        
+        if (cancelReasonSelect) {
+            cancelReasonSelect.addEventListener('change', function() {
+                if (this.value === 'Other') {
+                    otherReasonContainer.style.display = 'block';
+                } else {
+                    otherReasonContainer.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

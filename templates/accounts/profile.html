@@ -1,0 +1,147 @@
+{% extends 'base/base.html' %}
+
+{% block title %}My Profile - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="mb-4">My Profile</h1>
+            
+            <div class="row">
+                <!-- Profile Information -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
+                                    <span class="display-4 text-secondary">{{ user.username.0|upper }}</span>
+                                </div>
+                            {% endif %}
+                            
+                            <h2 class="h4">{{ user.get_full_name|default:user.username }}</h2>
+                            <p class="text-muted">Member since {{ user.date_joined|date:"F j, Y" }}</p>
+                            
+                            <div class="d-flex justify-content-center mt-3">
+                                <span class="badge bg-primary p-2 me-2">{{ user.get_rank_display_name }}</span>
+                                {% if user.is_kyc_verified %}
+                                    <span class="badge bg-success p-2">Verified</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark p-2">Unverified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'shop_accounts:edit_profile' %}" class="btn btn-outline-primary w-100">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Details -->
+                <div class="col-md-8 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-transparent">
+                            <h2 class="h5 mb-0">Account Details</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Username:</div>
+                                <div class="col-sm-8">{{ user.username }}</div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Email:</div>
+                                <div class="col-sm-8">{{ user.email }}</div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Full Name:</div>
+                                <div class="col-sm-8">{{ user.get_full_name|default:"Not provided" }}</div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Phone Number:</div>
+                                <div class="col-sm-8">{{ user.phone_number|default:"Not provided" }}</div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Date of Birth:</div>
+                                <div class="col-sm-8">{{ user.date_of_birth|date:"F j, Y"|default:"Not provided" }}</div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Country:</div>
+                                <div class="col-sm-8">{{ user.get_country_display_name }}</div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Sponsor:</div>
+                                <div class="col-sm-8">
+                                    {% if user.sponsor %}
+                                        {{ user.sponsor.get_full_name|default:user.sponsor.username }}
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wallet Information -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-transparent">
+                            <h2 class="h5 mb-0">Wallet Information</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center mb-4">
+                                <div class="col-sm-6">
+                                    <h3 class="h6 text-muted mb-1">Available Balance</h3>
+                                    <p class="h3 mb-0">${{ user.wallet_balance|floatformat:2 }}</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <h3 class="h6 text-muted mb-1">Lifetime Earnings</h3>
+                                    <p class="h3 mb-0">${{ user.lifetime_earnings|floatformat:2 }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="#" class="btn btn-primary">Request Withdrawal</a>
+                                <a href="#" class="btn btn-outline-secondary">View Transaction History</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- KYC Verification -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-transparent">
+                            <h2 class="h5 mb-0">KYC Verification</h2>
+                        </div>
+                        <div class="card-body">
+                            {% if user.is_kyc_verified %}
+                                <div class="text-center py-4">
+                                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                                    <h3 class="h5 mt-3">Verification Complete</h3>
+                                    <p class="text-muted">Your account has been verified on {{ user.kyc_verified_date|date:"F j, Y" }}</p>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-3">
+                                    <i class="bi bi-exclamation-circle-fill text-warning" style="font-size: 3rem;"></i>
+                                    <h3 class="h5 mt-3">Verification Required</h3>
+                                    <p class="text-muted mb-4">Complete KYC verification to unlock all platform features</p>
+                                    <a href="#" class="btn btn-primary">Complete Verification</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

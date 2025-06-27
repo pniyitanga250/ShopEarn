@@ -1,0 +1,430 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load product_filters %}
+
+{% block title %}{{ product.name }} - ShopEarn{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shop_products:product_list' %}">Products</a></li>
+            <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/600x400?text=Product+Image" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if product.images.exists %}
+                <div class="row mt-3">
+                    {% for image in product.images.all %}
+                        <div class="col-3">
+                            <img src="{{ image.image.url }}" class="img-fluid rounded cursor-pointer product-thumbnail" alt="{{ image.alt_text|default:product.name }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h1 class="mb-3">{{ product.name }}</h1>
+                    
+                    <div class="mb-3">
+                        {% if avg_rating > 0 %}
+                            <div class="d-flex align-items-center mb-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= avg_rating %}
+                                        <i class="fas fa-star text-warning me-1"></i>
+                                    {% elif forloop.counter <= avg_rating|add:0.5 %}
+                                        <i class="fas fa-star-half-alt text-warning me-1"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning me-1"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2">{{ avg_rating|floatformat:1 }} ({{ reviews|length }} reviews)</span>
+                            </div>
+                        {% else %}
+                            <div class="text-muted mb-2">No reviews yet</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        {% if product.is_on_sale and product.discount_price %}
+                            <div class="d-flex align-items-center">
+                                <h3 class="text-primary mb-0">{% display_price product.discount_price user.country %}</h3>
+                                <span class="text-decoration-line-through text-muted ms-2">{% display_price product.price user.country %}</span>
+                                {% with savings=product.price|sub:product.discount_price %}
+                                    {% with percent=savings|div:product.price|mul:100 %}
+                                        <span class="badge bg-danger ms-2">Save {{ percent|floatformat:0 }}%</span>
+                                    {% endwith %}
+                                {% endwith %}
+                            </div>
+                            <small class="text-muted">Original price: ${{ product.price }} USD</small>
+                        {% else %}
+                            <h3 class="text-primary mb-0">{% display_price product.price user.country %}</h3>
+                            <small class="text-muted">Original price: ${{ product.price }} USD</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p>{{ product.description }}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>Category: <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></span>
+                        </div>
+                        
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>
+                                Availability: 
+                                {% if product.is_in_stock %}
+                                    <span class="text-success">In Stock ({{ product.stock }} available)</span>
+                                {% else %}
+                                    <span class="text-danger">Out of Stock</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>Product value: PV {{ product.product_value }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if product.is_in_stock %}
+                        <form action="{% url 'shop_orders:cart_add' product.id %}" method="post" class="mb-4">
+                            {% csrf_token %}
+                            <div class="row align-items-center">
+                                <div class="col-md-4 col-6">
+                                    <div class="input-group">
+                                        <button type="button" class="btn btn-outline-secondary quantity-minus">-</button>
+                                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control text-center quantity-input">
+                                        <button type="button" class="btn btn-outline-secondary quantity-plus">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-6">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-secondary w-100 mb-4" disabled>
+                            <i class="fas fa-times-circle me-2"></i> Out of Stock
+                        </button>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary">
+                            <i class="far fa-heart me-2"></i> Add to Wishlist
+                        </button>
+                        <button class="btn btn-outline-success">
+                            <i class="fas fa-share-alt me-2"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Tabs -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white p-0">
+                    <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews ({{ reviews|length }})</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="mlm-tab" data-bs-toggle="tab" data-bs-target="#mlm" type="button" role="tab" aria-controls="mlm" aria-selected="false">MLM Benefits</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="productTabsContent">
+                        <!-- Description Tab -->
+                        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                            <h4>Product Description</h4>
+                            <p>{{ product.description }}</p>
+                        </div>
+                        
+                        <!-- Reviews Tab -->
+                        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                            <h4 class="mb-4">Customer Reviews</h4>
+                            <div class="card mb-4">
+                                <div class="card-header bg-white">
+                                    <h5 class="mb-0">Write a Review</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label class="form-label">Rating</label>
+                                            <div class="rating-stars">
+                                                <div class="d-flex">
+                                                    {% for i in "12345" %}
+                                                        <div class="me-2">
+                                                            <input type="radio" id="rating-{{ i }}" name="rating" value="{{ i }}" class="d-none">
+                                                            <label for="rating-{{ i }}" class="rating-star">
+                                                                <i class="far fa-star fa-2x"></i>
+                                                            </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="comment" class="form-label">Your Review</label>
+                                            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                                        </div>
+                                        {% if not user.is_authenticated %}
+                                        <div class="mb-3">
+                                            <label for="anonymous_name" class="form-label">Your Name (optional)</label>
+                                            <input type="text" class="form-control" id="anonymous_name" name="anonymous_name" maxlength="100" placeholder="Anonymous">
+                                        </div>
+                                        {% endif %}
+                                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% if reviews %}
+                                <div class="list-group">
+                                    {% for review in reviews %}
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div>
+                                                    <strong>
+                                                        {% if review.user %}{{ review.user.username }}{% elif review.anonymous_name %}{{ review.anonymous_name }}{% else %}Anonymous{% endif %}
+                                                    </strong>
+                                                    <small class="text-muted ms-2">{{ review.created_at|date:"M d, Y" }}</small>
+                                                </div>
+                                                <div>
+                                                    {% for i in "12345" %}
+                                                        {% if forloop.counter <= review.rating %}
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star text-warning"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <p class="mb-0">{{ review.comment }}</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-light">
+                                    <i class="fas fa-info-circle me-2"></i> No reviews yet. Be the first to review this product!
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- MLM Benefits Tab -->
+                        <div class="tab-pane fade" id="mlm" role="tabpanel" aria-labelledby="mlm-tab">
+                            <h4 class="mb-4">MLM Benefits</h4>
+                            
+                            <div class="alert alert-primary">
+                                <i class="fas fa-info-circle me-2"></i> When you purchase this product, you'll earn commissions when your downline members purchase it too!
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-coins text-success me-2"></i> PV (Product Value)</h5>
+                                            <p>This product has a PV (Product Value) of <strong>PV: {{ product.product_value }}</strong>, which contributes to your binary volume.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-users text-primary me-2"></i> Binary Earnings</h5>
+                                            <p>When your downline purchases this product, you'll earn a percentage based on your current rank.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-link text-warning me-2"></i> Share Your Referral Link</h5>
+                                    <p>Invite others to join your team and shop with your referral link to maximize your earnings!</p>
+                                    <a href="#" class="btn btn-primary">
+                                        <i class="fas fa-link me-2"></i> Get Your Referral Link
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3 class="mb-4">Related Products</h3>
+                <div class="row">
+                    {% for related in related_products %}
+                        <div class="col-md-3 mb-4">
+                            <div class="card product-card h-100">
+                                {% if related.main_image %}
+                                    <img src="{{ related.main_image.url }}" class="card-img-top" alt="{{ related.name }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/300x200?text=Product" class="card-img-top" alt="{{ related.name }}">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ related.name }}</h5>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div>
+                                            {% if related.is_on_sale and related.discount_price %}
+                                                <span class="price">${{ related.discount_price }}</span>
+                                                <span class="discount-price">${{ related.price }}</span>
+                                            {% else %}
+                                                <span class="price">${{ related.price }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <a href="{{ related.get_absolute_url }}" class="btn btn-sm btn-primary">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Rating stars functionality
+    const ratingStars = document.querySelectorAll('.rating-star');
+    ratingStars.forEach(function(star) {
+        star.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            const value = input.value;
+            
+            // Update all stars
+            ratingStars.forEach(function(s, index) {
+                const starIcon = s.querySelector('i');
+                if (index < value) {
+                    starIcon.classList.remove('far');
+                    starIcon.classList.add('fas');
+                } else {
+                    starIcon.classList.remove('fas');
+                    starIcon.classList.add('far');
+                }
+            });
+        });
+        
+        // Hover effect
+        star.addEventListener('mouseenter', function() {
+            const input = this.previousElementSibling;
+            const value = input.value;
+            
+            ratingStars.forEach(function(s, index) {
+                const starIcon = s.querySelector('i');
+                if (index < value) {
+                    starIcon.classList.remove('far');
+                    starIcon.classList.add('fas');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseleave', function() {
+            const checkedInput = document.querySelector('.rating-stars input:checked');
+            const checkedValue = checkedInput ? checkedInput.value : 0;
+            
+            ratingStars.forEach(function(s, index) {
+                const starIcon = s.querySelector('i');
+                if (index < checkedValue) {
+                    starIcon.classList.remove('far');
+                    starIcon.classList.add('fas');
+                } else {
+                    starIcon.classList.remove('fas');
+                    starIcon.classList.add('far');
+                }
+            });
+        });
+    });
+    
+    // Product thumbnails
+    const productThumbnails = document.querySelectorAll('.product-thumbnail');
+    const mainImage = document.querySelector('.card-body img.img-fluid');
+    
+    if (productThumbnails.length > 0 && mainImage) {
+        productThumbnails.forEach(function(thumbnail) {
+            thumbnail.addEventListener('click', function() {
+                mainImage.src = this.src;
+            });
+            
+            // Add hover effect
+            thumbnail.style.cursor = 'pointer';
+            thumbnail.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.7';
+            });
+            thumbnail.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+            });
+        });
+    }
+    
+    // AJAX review submission
+    const reviewForm = document.querySelector('#reviews form');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(reviewForm);
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Replace the reviews tab content with the new HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newReviewsTab = doc.querySelector('#reviews');
+                if (newReviewsTab) {
+                    document.getElementById('reviews').innerHTML = newReviewsTab.innerHTML;
+                }
+                // Optionally show a toast or message
+            });
+        });
+    }
+});
+</script>
+{% endblock %}
