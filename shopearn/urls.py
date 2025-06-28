@@ -32,6 +32,7 @@ urlpatterns = [
     path('sitemap.xml', views.sitemap_view, name='sitemap'),
     path('robots.txt', views.robots_txt, name='robots'),
     path('google-site-verification.html', views.google_verification, name='google-verification'),
+    path('google<str:verification_code>.html', views.google_verification_file, name='google-verification-file'),
 ]
 
 # Serve media files in development

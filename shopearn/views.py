@@ -46,3 +46,11 @@ def google_verification(request):
     Google Search Console verification page
     """
     return render(request, 'google-site-verification.html')
+
+
+def google_verification_file(request, verification_code):
+    """
+    Serve Google verification file
+    """
+    content = f"google-site-verification: {verification_code}"
+    return HttpResponse(content, content_type='text/plain')

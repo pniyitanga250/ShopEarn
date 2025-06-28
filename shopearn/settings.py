@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-a=s)ci7(f$*v+u69xnc6+k7sve-1p@3w!u=rsewged4qpnb1ps
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', '.vercel.app', '.now.sh']
 
 
 # Application definition
@@ -207,6 +207,8 @@ CONTACT_EMAIL = 'peacemakerproofficial@gmail.com'  # Email to receive contact fo
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
+    "https://*.vercel.app",
+    "https://*.now.sh",
 ]
 
 # Supabase Configuration
