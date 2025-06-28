@@ -10,10 +10,17 @@ class SupabaseStorageService:
     
     def upload_file(self, file, folder='uploads', filename=None):
         """Upload a file to Supabase storage"""
-        if not filename:
-            # Generate unique filename
-            file_extension = os.path.splitext(file.name)[1]
-            filename = f"{uuid.uuid4()}{file_extension}"
+        # Always generate a unique filename to avoid conflicts
+        file_extension = os.path.splitext(file.name)[1]
+        unique_id = uuid.uuid4()
+        
+        if filename:
+            # If filename is provided, add uniqueness to it
+            base_name = os.path.splitext(filename)[0]
+            filename = f"{base_name}_{unique_id}{file_extension}"
+        else:
+            # Generate completely new filename
+            filename = f"{unique_id}{file_extension}"
         
         file_path = f"{folder}/{filename}" if folder else filename
         

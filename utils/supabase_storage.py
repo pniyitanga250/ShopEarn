@@ -27,10 +27,13 @@ class SupabaseStorage(Storage):
         return self.client.storage.from_(self.bucket_name)
     
     def _generate_filename(self, name):
-        """Generate a unique filename if needed"""
+        """Generate a unique filename to avoid conflicts"""
         if not name:
             return str(uuid.uuid4())
-        return name
+        
+        # Add uniqueness to the filename
+        base_name, extension = os.path.splitext(name)
+        return f"{base_name}_{uuid.uuid4()}{extension}"
     
     def _open(self, name, mode='rb'):
         """
@@ -63,14 +66,32 @@ class SupabaseStorage(Storage):
         # Get content type if available
         content_type = getattr(content, 'content_type', 'application/octet-stream')
         
-        # Upload the file
-        bucket.upload(
-            name,
-            file_data,
-            file_options={
-                'content-type': content_type
-            }
-        )
+        try:
+            # Upload the file
+            bucket.upload(
+                name,
+                file_data,
+                file_options={
+                    'content-type': content_type
+                }
+            )
+        except Exception as e:
+            # If we get a conflict (409) error, try with a different filename
+            if "409" in str(e) or "Duplicate" in str(e):
+                # Generate a completely new unique name
+                name = f"{uuid.uuid4()}{os.path.splitext(name)[1]}"
+                
+                # Try upload again
+                bucket.upload(
+                    name,
+                    file_data,
+                    file_options={
+                        'content-type': content_type
+                    }
+                )
+            else:
+                # Re-raise other exceptions
+                raise
         
         return name
     
