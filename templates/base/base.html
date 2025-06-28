@@ -3,6 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="{% block meta_description %}ShopEarn - Your one-stop shop for quality products. Shop easily and track your orders through our user-friendly platform.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}shop, e-commerce, online shopping, order tracking, products, shopping platform{% endblock %}">
+    <meta name="author" content="ShopEarn">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://shopaxis-datopside.onrender.com{{ request.path }}{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}ShopEarn - Shop and Track Your Orders{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}ShopEarn - Your one-stop shop for quality products. Shop easily and track your orders through our user-friendly platform.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://shopaxis-datopside.onrender.com/static/img/shopearn-social.jpg{% endblock %}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{% block twitter_url %}https://shopaxis-datopside.onrender.com{{ request.path }}{% endblock %}">
+    <meta property="twitter:title" content="{% block twitter_title %}ShopEarn - Shop and Track Your Orders{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}ShopEarn - Your one-stop shop for quality products. Shop easily and track your orders through our user-friendly platform.{% endblock %}">
+    <meta property="twitter:image" content="{% block twitter_image %}https://shopaxis-datopside.onrender.com/static/img/shopearn-social.jpg{% endblock %}">
+    
     <title>{% block title %}ShopEarn - Shop and Track Your Orders{% endblock %}</title>
     
     <!-- Google Fonts -->
@@ -263,5 +283,24 @@
     <script src="{% static 'js/main.js' %}"></script>
     
     {% block extra_js %}{% endblock %}
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "ShopEarn",
+        "url": "https://shopaxis-datopside.onrender.com",
+        "logo": "https://shopaxis-datopside.onrender.com/static/img/logo.png",
+        "description": "ShopEarn - Your one-stop shop for quality products. Shop easily and track your orders through our user-friendly platform.",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+250780475093",
+            "contactType": "customer service"
+        }
+    }
+    </script>
+    
+    {% block structured_data %}{% endblock %}
 </body>
 </html>

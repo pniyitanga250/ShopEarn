@@ -1,7 +1,11 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
-{% block title %}ShopEarn - Shop and Track Your Orders{% endblock %}
+{% block title %}ShopEarn - Shop and Track Your Orders | Online Shopping Platform{% endblock %}
+
+{% block meta_description %}ShopEarn is a premium e-commerce platform where you can shop quality products and track your orders in real-time. Join our community for a seamless shopping experience.{% endblock %}
+
+{% block meta_keywords %}e-commerce, online shopping, order tracking, shop online, quality products, shopping platform, secure checkout{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -1221,5 +1225,50 @@
             }, 500);
         }, 3000);
     });
+</script>
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "ShopEarn",
+    "url": "https://shopaxis-datopside.onrender.com",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://shopaxis-datopside.onrender.com/products/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Shop",
+            "description": "Browse our catalog and purchase high-quality products that you love.",
+            "url": "https://shopaxis-datopside.onrender.com/products/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Order",
+            "description": "Complete your purchase with our secure and easy checkout process.",
+            "url": "https://shopaxis-datopside.onrender.com/orders/cart/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Track",
+            "description": "Monitor your order status and delivery progress through our user-friendly dashboard.",
+            "url": "https://shopaxis-datopside.onrender.com/orders/history/"
+        }
+    ]
+}
 </script>
 {% endblock %}

@@ -26,11 +26,15 @@ urlpatterns = [
     path('accounts/', include('shop_accounts.urls')),
     path('products/', include('shop_products.urls')),
     path('orders/', include('shop_orders.urls')),
-    
     path('dashboard/finances/', include('dashboard_finances.urls')),
-   
+    
+    # SEO-related URLs
+    path('sitemap.xml', views.sitemap_view, name='sitemap'),
+    path('robots.txt', views.robots_txt, name='robots'),
+    path('google-site-verification.html', views.google_verification, name='google-verification'),
 ]
 
 # Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

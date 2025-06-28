@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /accounts/profile/
+Disallow: /accounts/login/
+Disallow: /accounts/logout/
+Disallow: /orders/cart/
+Disallow: /orders/checkout/
+
+Sitemap: https://shopaxis-datopside.onrender.com/sitemap.xml
